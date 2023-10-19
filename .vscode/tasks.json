@@ -1,0 +1,37 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "cd build ; make",
+      "group": "build"
+    },
+    {
+      "label": "config",
+      "type": "shell",
+      "command": "rm -rf build ; rm compile_commands.json ; mkdir build ; cd build ; cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. ; mv compile_commands.json ../",
+      "group": "build"
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "cd build ; make clean",
+      "group": "build"
+    },
+    {
+      "label": "mrproper",
+      "type": "shell",
+      "command": "rm -rf build ; rm compile_commands.json",
+      "group": "build"
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "./build/bin/UnitTest --gtest_brief=1",
+      "group": "test"
+    },
+  ]
+}
