@@ -45,13 +45,7 @@ public:
    * @return T
    */
   T getFracVal() {
-    T TempVal = Value;
-    T Ret = 0;
-    for (int I = 1; I <= FracBits; I++) {
-      if (TempVal % 2)
-        Ret = (Ret << 1) + 1;
-    }
-    return Ret;
+    return ((Value >> FracBits) << FracBits) ^ Value;
   }
 
   /**
@@ -84,12 +78,12 @@ public:
 
   /**
    * @brief Multiplication of two fixed points.
-   *        The resulting fixed point will use the product of both FracBits.
+   *        The resulting fixed point will use the sum of both FracBits.
    *
    * @tparam TIn
    * @tparam FracBitsIn
    * @param In
-   * @return Fixp<T, FracBits * FracBitsIn>
+   * @return Fixp<T, FracBits + FracBitsIn>
    */
   template <class TIn, TIn FracBitsIn>
   Fixp<T, FracBits + FracBitsIn> operator*(Fixp<TIn, FracBitsIn> In) {
@@ -97,12 +91,12 @@ public:
 
   /**
    * @brief Division of two fixed points.
-  *         Te resulting fixed point will use the division of both FracBits.
+  *         Te resulting fixed point will use the substraction of both FracBits.
    *
    * @tparam TIn
    * @tparam FracBitsIn
    * @param In
-   * @return Fixp<T, (T)((FracBits / FracBitsIn))>
+   * @return Fixp<T, (T)((FracBits - FracBitsIn))>
    */
   template <class TIn, TIn FracBitsIn>
   Fixp<T, (T)((FracBits - FracBitsIn))> operator/(Fixp<TIn, FracBitsIn> In) {
