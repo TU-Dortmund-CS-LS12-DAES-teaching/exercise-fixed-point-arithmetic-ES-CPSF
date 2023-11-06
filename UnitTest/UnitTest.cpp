@@ -92,7 +92,7 @@ TEST(Positive, FracVal) {
   std::cout << "A: " << A << "\n";
   int16_t AFrac = A.getFracVal();
   std::cout << "AFrac: " << AFrac << "\n";
-  EXPECT_TRUE(AFrac == 3);
+  EXPECT_TRUE(AFrac == 0b11);
 }
 
 TEST(Negative, FracVal) {
@@ -101,6 +101,13 @@ TEST(Negative, FracVal) {
   int16_t AFrac = A.getFracVal();
   std::cout << "AFrac: " << AFrac << "\n";
   EXPECT_TRUE(AFrac == 3);
+}
+TEST(Positive, FracVal2) {
+  Fixp<int8_t, 3> A(0b100101);
+  std::cout << "A: " << A << "\n";
+  int16_t AFrac = A.getFracVal();
+  std::cout << "AFrac: " << AFrac << "\n";
+  EXPECT_TRUE(AFrac == 0b101);
 }
 
 TEST(Positive, Equal) {
