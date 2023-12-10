@@ -10,14 +10,16 @@
 /**
  * @brief Implementation of a fixed floating point data type.
  *
- * @tparam T used Type for representatione. Must be of: int[8,16,32,64]_t type.
+ * @tparam T used Type for representation. Must be of: int[8,16,32,64]_t type.
  * @tparam FracBits Number of bits used to represent the part smaller 0.
  */
 template <class T, T FracBits> class Fixp {
 public:
   T Value = 0;
 
-  Fixp(T In) {
+  Fixp(T In) { 
+    //get a number in and check if its either of size 8,16,32 or 64 if not theres an error
+    //if input number is correct and of a correct size, Value = the input value
     int8_t TypeSanityCheck = false;
     TypeSanityCheck += std::is_same<T, int8_t>::value;
     TypeSanityCheck += std::is_same<T, int16_t>::value;
@@ -32,8 +34,11 @@ public:
    * @brief Get the Portion of the fixed point before the ".", bianry encoded.
    *        This Value is also the ceiling function (integer rounding) of the
    *        fixed point.
-   *
-   * @return T
+   *         kriege die integer-Zahl vor dem komma, in binary
+            falls Value >= 0, dann shifte die zahl um die Anzahl an Stellen nach dem komma nach rechts
+            also 01010.000 => 00001010
+            falls Value negativ: multipliziere mit -1 und verschiebe dann um Fracbits um Integer wert zu bekommen
+    * @return T
    */
   inline T getIntVal() {
     return (Value >= 0) ? (Value >> FracBits) : (Value * -1) >> FracBits;
@@ -41,7 +46,8 @@ public:
 
   /**
    * @brief Get the Portion of the fixed point behind the ".", binary encoded.
-   *
+   *        die Zahl hinter dem komma bekommen
+            01010.000 => (00001.010)<<3 = 01010.000^01010.00
    * @return T
    */
   T getFracVal() {
@@ -50,8 +56,8 @@ public:
 
   /**
    * @brief Summation of two Fixed Points.
-   *        In case two fixed points with different accuracy are added,
-   *        The resulting fixed point will use the higher accuracy/FracBits.
+   *        In case two fixed points with different FracBits are added,
+   *        The resulting fixed point will use the higher FracBits.
    *
    * @tparam TIn
    * @tparam FracBitsIn
@@ -60,8 +66,20 @@ public:
    */
   template <class TIn, TIn FracBitsIn>
   Fixp operator+(Fixp<TIn, FracBitsIn> In) {
-  }
 
+    //assert(sizeof(T) == sizeof(TIn));
+
+    return Fixp<T,(T)(std::max(FracBitsIn, FracBits))>((T)Value + In.Value);
+
+  
+  }
+  /*
+    template <class TIn, TIn FracBitsIn>
+  Fixp<T, (T)((FracBits - FracBitsIn))> operator/(Fixp<TIn, FracBitsIn> In) {
+      assert(sizeof(T) == sizeof(TIn));
+      return Fixp<T, (T)((FracBits - FracBitsIn))>((T)Value / In.Value);
+    }
+  */
   /**
    * @brief Substraction of two fixed points.
    *        In case two fixed points with different accuracy are substracted,
@@ -74,6 +92,11 @@ public:
    */
   template <class TIn, TIn FracBitsIn>
   Fixp operator-(Fixp<TIn, FracBitsIn> In) {
+    /*if(Value<0){
+    return Fixp<T,(T)(std::max(FracBitsIn, FracBits))>((T)Value + (In.Value*-1));
+    }
+  */
+    return Fixp<T,(T)(std::max(FracBitsIn, FracBits))>((T)Value - In.Value);
   }
 
   /**
@@ -87,12 +110,14 @@ public:
    */
   template <class TIn, TIn FracBitsIn>
   Fixp<T, FracBits + FracBitsIn> operator*(Fixp<TIn, FracBitsIn> In) {
+    assert(sizeof(T) == sizeof(TIn));
+    return Fixp<T, (T)((FracBits + FracBitsIn))>((T)Value * In.Value);
   }
 
   /**
    * @brief Division of two fixed points.
-  *         Te resulting fixed point will use the substraction of both FracBits.
-   *
+  *         The resulting fixed point will use the substraction of both FracBits.
+   *        Das Ergebnis der Division nutzt die Subtraktion aus den FracBiots
    * @tparam TIn
    * @tparam FracBitsIn
    * @param In

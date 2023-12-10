@@ -1,4 +1,5 @@
 #include <bitset>
+#include <cstdint>
 #include <iostream>
 
 #include <gtest/gtest.h>
@@ -164,6 +165,7 @@ TEST(Positive, Addition) {
   Fixp<int8_t, 2> ApC = A + C;
   EXPECT_TRUE(ApB == D);
   EXPECT_TRUE(ApC == E);
+
 }
 
 TEST(Negative, Addition) {
