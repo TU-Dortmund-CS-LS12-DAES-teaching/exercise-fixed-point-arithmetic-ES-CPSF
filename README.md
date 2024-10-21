@@ -30,7 +30,6 @@ Please provide one of the following arguments:
 ## The Exercise
 Check out the FixedPoint.cpp file in the FixedPoint folder. There you will see the function bodies for the operators +, - and *. The exercise is to implement all three functions. A good example is to look at the already implemented / function as reference. Once all Unit Tests pass, the exercise is considered solved.
 
-Please upload your FixedPoint.cpp on moodle!
 
 ## The Fixed Point implementation
 The implementation of our fixed point is very straight forward. It uses a datatype T, which can be either int8_t, int16_t, int32_t or int64_t, to encode its Value. Please be aware, that the Value is encoded as a signed Value in two's complement. The second type is the FracBits, which is the number of how many bits are used for encoding the digits after the fixed point. A fixed point with T=int8_t and FracBit=3 would be represented like this:
